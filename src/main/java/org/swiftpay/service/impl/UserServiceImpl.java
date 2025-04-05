@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.swiftpay.dto.AccountInfo;
 import org.swiftpay.dto.BankResponse;
+import org.swiftpay.dto.EmailDetails;
 import org.swiftpay.dto.UserRequest;
 import org.swiftpay.entity.User;
 import org.swiftpay.repository.UserRepository;
@@ -16,6 +17,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    EmailService emailService;
 
 
     @Override
@@ -45,6 +49,16 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         User savedUser = userRepository.save(newUser);
+        //send email alert
+        EmailDetails emailDetails = EmailDetails.builder()
+                .recipient(savedUser.getEmail())
+                .subject("ACCOUNT CREATION")
+                .messageBody("Welcome to SwiftPay, \nYour account has been successfully created. \nYour Account Details: \n" +
+                        "Account Name; " + savedUser.getFirstName() + " " + savedUser.getLastName() +
+                        " " + savedUser.getOtherName () + "\nAccount Number" + savedUser.getAccountNumber())
+                .build();
+        emailService.sendEmailAlert(emailDetails);
+
         return BankResponse.builder()
                 .responseCode(AccountUtils.ACCOUNT_CREATION_MESSAGE)
                 .responseMessage(AccountUtils.ACCOUNT_CREATION_SUCCESS)
