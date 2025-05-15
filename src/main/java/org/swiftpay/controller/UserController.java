@@ -3,6 +3,7 @@ package org.swiftpay.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.swiftpay.dto.BankResponse;
+import org.swiftpay.dto.CreditDebitRequest;
 import org.swiftpay.dto.EnquiryRequest;
 import org.swiftpay.dto.UserRequest;
 import org.swiftpay.service.impl.UserService;
@@ -27,5 +28,10 @@ public class UserController {
     @GetMapping("/nameEnquiry")
     public String nameEnquiry(@RequestBody EnquiryRequest enquiryRequest){
         return  userService.nameEnquiry(enquiryRequest);
+    }
+
+    @PostMapping("/credit")
+    public BankResponse creditAccount (@RequestBody CreditDebitRequest request){
+        return  userService.creditAccount(request);
     }
 }

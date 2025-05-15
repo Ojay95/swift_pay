@@ -18,6 +18,9 @@ public class AccountUtils {
     public static final String ACCOUNT_FOUND_CODE = "004";
     public static final String ACCOUNT_FOUND_MESSAGE = "This user already has an account.";
 
+    public static final String ACCOUNT_CREDITED_SUCCESS_CODE = "005";
+
+    public static final String ACCOUNT_CREDITED_SUCCESS_MESSAGE = "Your account has been credited successfully.";
     public static String generateAccountNumber() {
         // 2025 + randomSixDigits
 
