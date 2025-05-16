@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
         User userToCredit = userRepository.findByAccountNumber(request.getAccountNumber());
-        userToCredit.setAccountBalance( userToCredit.getAccountBalance().add(request.getAmount()));
+        userToCredit.setAccountBalance( userToCredit.getAccountBalance() .add(request.getAmount()));
         userRepository.save(userToCredit);
 
         return BankResponse.builder()
@@ -127,5 +127,36 @@ public class UserServiceImpl implements UserService {
                         .accountNumber(request.getAccountNumber())
                         .build())
                 .build();
+    }
+
+    @Override
+    public BankResponse debitAccount(CreditDebitRequest request) {
+        //Check of the account exist
+        boolean isAccountExist = userRepository.existsByAccountNumber(request.getAccountNumber());
+
+        if(!isAccountExist){
+            return BankResponse.builder()
+                    .responseCode(AccountUtils.ACCOUNT_NOT_EXIST_CODE)
+                    .responseMessage(AccountUtils.ACCOUNT_NOT_EXISTS_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+        }
+
+        User userToDebit = userRepository.findByAccountNumber(request.getAccountNumber());
+        userToDebit.setAccountBalance( userToDebit.getAccountBalance() .subtract(request.getAmount()));
+        userRepository.save(userToDebit);
+
+        return BankResponse.builder()
+                .responseCode(AccountUtils.ACCOUNT_DEBITED_SUCCESS_CODE)
+                .responseMessage(AccountUtils.ACCOUNT_DEBITED_SUCCESS_MESSAGE)
+                .accountInfo(AccountInfo.builder()
+                        .accountName(userToDebit.getFirstName()+ " " + userToDebit.getLastName() + " " + userToDebit.getOtherName())
+                        .accountBalance(userToDebit.getAccountBalance())
+                        .accountNumber(request.getAccountNumber())
+                        .build())
+                .build();
+
+
+
     }
 }

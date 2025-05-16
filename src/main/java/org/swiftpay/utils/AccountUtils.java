@@ -20,7 +20,13 @@ public class AccountUtils {
 
     public static final String ACCOUNT_CREDITED_SUCCESS_CODE = "005";
 
+    public static final String ACCOUNT_DEBITED_SUCCESS_CODE = "006";
+
     public static final String ACCOUNT_CREDITED_SUCCESS_MESSAGE = "Your account has been credited successfully.";
+    public static final String ACCOUNT_DEBITED_SUCCESS_MESSAGE = "Your account has been debited successfully.";
+
+
+
     public static String generateAccountNumber() {
         // 2025 + randomSixDigits
 
