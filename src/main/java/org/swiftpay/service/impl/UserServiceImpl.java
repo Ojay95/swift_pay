@@ -143,20 +143,28 @@ public class UserServiceImpl implements UserService {
         }
 
         User userToDebit = userRepository.findByAccountNumber(request.getAccountNumber());
-        userToDebit.setAccountBalance( userToDebit.getAccountBalance() .subtract(request.getAmount()));
-        userRepository.save(userToDebit);
+        int availableBalance = Integer.parseInt(userToDebit.getAccountBalance().toString());
+        int debitAmount = Integer.parseInt(request.getAmount().toString());
+        if (availableBalance < debitAmount){
+            return  BankResponse.builder()
+                    .responseCode(AccountUtils.INSUFFICIENT_BALANCE_CODE)
+                    .responseMessage(AccountUtils.INSUFFICIENT_BALANCE_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+        }
+        else{
+            userToDebit.setAccountBalance( userToDebit.getAccountBalance() .subtract(request.getAmount()));
+            userRepository.save(userToDebit);
+            return BankResponse.builder()
+                    .responseCode(AccountUtils.ACCOUNT_DEBITED_SUCCESS_CODE)
+                    .responseMessage(AccountUtils.ACCOUNT_DEBITED_SUCCESS_MESSAGE)
+                    .accountInfo(AccountInfo.builder()
+                            .accountName(userToDebit.getFirstName()+ " " + userToDebit.getLastName() + " " + userToDebit.getOtherName())
+                            .accountBalance(userToDebit.getAccountBalance())
+                            .accountNumber(request.getAccountNumber())
+                            .build())
+                    .build();
 
-        return BankResponse.builder()
-                .responseCode(AccountUtils.ACCOUNT_DEBITED_SUCCESS_CODE)
-                .responseMessage(AccountUtils.ACCOUNT_DEBITED_SUCCESS_MESSAGE)
-                .accountInfo(AccountInfo.builder()
-                        .accountName(userToDebit.getFirstName()+ " " + userToDebit.getLastName() + " " + userToDebit.getOtherName())
-                        .accountBalance(userToDebit.getAccountBalance())
-                        .accountNumber(request.getAccountNumber())
-                        .build())
-                .build();
-
-
-
+        }
     }
 }
