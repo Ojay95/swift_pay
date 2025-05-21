@@ -9,6 +9,7 @@ import org.swiftpay.repository.UserRepository;
 import org.swiftpay.utils.AccountUtils;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -143,9 +144,9 @@ public class UserServiceImpl implements UserService {
         }
 
         User userToDebit = userRepository.findByAccountNumber(request.getAccountNumber());
-        int availableBalance = Integer.parseInt(userToDebit.getAccountBalance().toString());
-        int debitAmount = Integer.parseInt(request.getAmount().toString());
-        if (availableBalance < debitAmount){
+        BigInteger availableBalance = userToDebit.getAccountBalance().toBigInteger();
+        BigInteger debitAmount = request.getAmount().toBigInteger();
+        if (availableBalance.intValue() < debitAmount.intValue()){
             return  BankResponse.builder()
                     .responseCode(AccountUtils.INSUFFICIENT_BALANCE_CODE)
                     .responseMessage(AccountUtils.INSUFFICIENT_BALANCE_MESSAGE)
@@ -164,7 +165,6 @@ public class UserServiceImpl implements UserService {
                             .accountNumber(request.getAccountNumber())
                             .build())
                     .build();
-
         }
     }
 }
