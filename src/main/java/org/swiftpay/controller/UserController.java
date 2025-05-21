@@ -2,10 +2,7 @@ package org.swiftpay.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.swiftpay.dto.BankResponse;
-import org.swiftpay.dto.CreditDebitRequest;
-import org.swiftpay.dto.EnquiryRequest;
-import org.swiftpay.dto.UserRequest;
+import org.swiftpay.dto.*;
 import org.swiftpay.service.impl.UserService;
 
 @RestController
@@ -38,5 +35,10 @@ public class UserController {
     @PostMapping("/debit")
     public BankResponse debitAccount (@RequestBody CreditDebitRequest request){
         return  userService.debitAccount(request);
+    }
+
+    @PostMapping("/transfer")
+    public BankResponse transfer(@RequestBody TransferRequest request){
+        return  userService.transfer(request);
     }
 }

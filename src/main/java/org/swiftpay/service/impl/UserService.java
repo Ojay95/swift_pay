@@ -1,9 +1,6 @@
 package org.swiftpay.service.impl;
 
-import org.swiftpay.dto.BankResponse;
-import org.swiftpay.dto.CreditDebitRequest;
-import org.swiftpay.dto.EnquiryRequest;
-import org.swiftpay.dto.UserRequest;
+import org.swiftpay.dto.*;
 
 public interface UserService {
     BankResponse createAccount(UserRequest userRequest);
@@ -15,4 +12,6 @@ public interface UserService {
     BankResponse creditAccount (CreditDebitRequest request);
 
     BankResponse debitAccount (CreditDebitRequest request);
+
+    BankResponse transfer (TransferRequest request);
 }
