@@ -175,7 +175,6 @@ public class UserServiceImpl implements UserService {
         // debit the account
         // get the account to credit
         // credit the account;
-        boolean isSourceAccountExist  = userRepository.existsByAccountNumber(request.getSourceAccountNumber());
         boolean isDestinationAccountExist = userRepository.existsByAccountNumber(request.getDestinationAccountNumber());
         if (!isDestinationAccountExist){
             return BankResponse.builder()
@@ -187,10 +186,10 @@ public class UserServiceImpl implements UserService {
         }
 
         User sourceAccountUser = userRepository.findByAccountNumber(request.getSourceAccountNumber());
-        if (request.getAmount().compareTo(sourceAccountUser.getAccountBalance()) < 0 ){
+        if (request.getAmount().compareTo(sourceAccountUser.getAccountBalance()) > 0 ){
             return BankResponse.builder()
-                    .responseCode(AccountUtils.ACCOUNT_DEBITED_SUCCESS_CODE)
-                    .responseMessage(AccountUtils.ACCOUNT_DEBITED_SUCCESS_MESSAGE)
+                    .responseCode(AccountUtils.INSUFFICIENT_BALANCE_CODE)
+                    .responseMessage(AccountUtils.INSUFFICIENT_BALANCE_MESSAGE)
                     .accountInfo(null)
                     .build();
         }
@@ -204,7 +203,7 @@ public class UserServiceImpl implements UserService {
                 .recipient(sourceAccountUser.getEmail())
                 .messageBody("The sum of " + request.getAmount() + "has been deducted from your account! Your current balance" + sourceAccountUser.getAccountBalance())
                 .build();
-        emailService.sendEmailAlert(debitAlert);
+        emailService. sendEmailAlert(debitAlert);
 
 
         User destinationAccountUser = userRepository.findByAccountNumber(request.getDestinationAccountNumber());
@@ -217,6 +216,7 @@ public class UserServiceImpl implements UserService {
                 .messageBody("The sum of " + request.getAmount() + "has been credited to your account! Your current balance" + sourceAccountUser.getAccountBalance())
                 .build();
         emailService.sendEmailAlert(debitAlert);
+
         return  BankResponse.builder()
                 .responseCode(AccountUtils.TRANSFER_SUCCESSFUL_CODE)
                 .responseMessage(AccountUtils.TRANSFER_SUCCESSFUL_MESSAGE)
