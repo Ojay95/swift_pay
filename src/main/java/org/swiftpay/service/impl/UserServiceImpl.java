@@ -203,6 +203,7 @@ public class UserServiceImpl implements UserService {
                 .recipient(sourceAccountUser.getEmail())
                 .messageBody("The sum of " + request.getAmount() + "has been deducted from your account! Your current balance" + sourceAccountUser.getAccountBalance())
                 .build();
+
         emailService. sendEmailAlert(debitAlert);
 
 
